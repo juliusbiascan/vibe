@@ -12,6 +12,7 @@ import { Suspense } from "react";
 import { Fragment } from "@/generated/prisma";
 import React from "react";
 import ProjectHeader from "../components/project-header";
+import { FragmentWeb } from "../components/fragment-web";
 
 interface ProjectViewProps {
   projectId: string;
@@ -43,7 +44,8 @@ export const ProjectView = ({ projectId }: ProjectViewProps) => {
         <ResizablePanel
           defaultSize={65}
           minSize={50}>
-          TODO: Preview
+
+          {!!activeFragment && <FragmentWeb data={activeFragment} />}
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>
