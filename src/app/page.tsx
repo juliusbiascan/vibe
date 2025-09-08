@@ -3,18 +3,21 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useTRPC } from "@/trpc/client";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import React from "react";
 import { toast } from "sonner";
 
 const Page = () => {
   const [value, setValue] = React.useState("");
   const trpc = useTRPC();
+  const { data: messages } = useQuery(
+    trpc.messages.getMany.queryOptions()
+  );
 
   const invoke = useMutation(
-    trpc.invoke.mutationOptions({
+    trpc.messages.create.mutationOptions({
       onSuccess: () => {
-        toast.success("Background Jobs Started!");
+        toast.success("Message created");
       }
     })
   )
@@ -35,6 +38,12 @@ const Page = () => {
         }}>
         Invoke Background Jobs
       </Button>
+
+      {messages?.map((message) => (
+        <div key={message.id} className="p-2 border-b">
+          <p><strong>{message.role}:</strong> {message.content}</p>
+        </div>
+      ))}
     </div>
   )
 }
