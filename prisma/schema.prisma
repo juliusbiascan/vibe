@@ -46,9 +46,12 @@ model Message {
   role    MessageRole
   type    MessageType
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  Fragment  Fragment?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  projectId String
+  project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  fragment  Fragment?
 }
 
 model Fragment {
@@ -60,4 +63,14 @@ model Fragment {
   files      Json
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+
+model Project {
+  id   String @id @default(uuid())
+  name String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages Message[]
 }

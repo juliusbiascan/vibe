@@ -170,6 +170,7 @@ export const codeAgentFunction = inngest.createFunction(
       if (isError) {
         return await prisma.message.create({
           data: {
+            projectId: event.data.projectId,
             content: "The agent failed to complete the task. Please try again.",
             role: MessageRole.ASSISTANT,
             type: MessageType.RESULT,
@@ -178,10 +179,11 @@ export const codeAgentFunction = inngest.createFunction(
       }
       return await prisma.message.create({
         data: {
+          projectId: event.data.projectId,
           content: result.state.data.summary,
           role: MessageRole.ASSISTANT,
           type: MessageType.RESULT,
-          Fragment: {
+          fragment: {
             create: {
               sandboxUrl: sandboxUrl,
               files: result.state.data.files,
