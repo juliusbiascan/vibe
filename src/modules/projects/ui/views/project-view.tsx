@@ -75,7 +75,7 @@ export const ProjectView = ({ projectId }: ProjectViewProps) => {
                   asChild
                   className="h-8 px-2 rounded-md border"
                   onClick={() => { }}
-                  variant={'default'}
+                  variant={'tertiary'}
                 >
                   <Link href={"/pricing"}>
                     <CrownIcon /> Upgrade
