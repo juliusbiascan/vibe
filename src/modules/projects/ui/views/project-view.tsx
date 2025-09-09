@@ -1,7 +1,12 @@
 "use client"
 
-// import { useTRPC } from "@/trpc/client";
-// import { useSuspenseQuery } from "@tanstack/react-query";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
+
 import {
   ResizablePanel,
   ResizableHandle,
@@ -13,14 +18,17 @@ import { Fragment } from "@/generated/prisma";
 import React from "react";
 import ProjectHeader from "../components/project-header";
 import { FragmentWeb } from "../components/fragment-web";
+import { CodeIcon, CrownIcon, EyeIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { FileExplorer } from "@/components/file-explorer";
 
 interface ProjectViewProps {
   projectId: string;
 }
 export const ProjectView = ({ projectId }: ProjectViewProps) => {
-
   const [activeFragment, setActiveFragment] = React.useState<Fragment | null>(null);
-
+  const [tabState, setTabState] = React.useState("preview");
 
   return (
     <div className="h-screen">
@@ -45,7 +53,45 @@ export const ProjectView = ({ projectId }: ProjectViewProps) => {
           defaultSize={65}
           minSize={50}>
 
-          {!!activeFragment && <FragmentWeb data={activeFragment} />}
+          <Tabs
+            className="h-full gap-y-0"
+            defaultValue="preview"
+            value={tabState}
+            onValueChange={(value) => setTabState(value as "preview" | "code")}>
+
+            <div className="w-full flex items-center p-2 border-b gap-x-2">
+              <TabsList className="h-8 p-0 border rounded-md">
+                <TabsTrigger value="preview" className="rounded-md">
+                  <EyeIcon />
+                  Demo
+                </TabsTrigger>
+                <TabsTrigger value="code" className="rounded-md">
+                  <CodeIcon />
+                  Code
+                </TabsTrigger>
+              </TabsList>
+              <div className="ml-auto flex items-center gap-x-2 ">
+                <Button
+                  asChild
+                  className="h-8 px-2 rounded-md border"
+                  onClick={() => { }}
+                  variant={'default'}
+                >
+                  <Link href={"/pricing"}>
+                    <CrownIcon /> Upgrade
+                  </Link>
+                </Button>
+              </div>
+            </div>
+            <TabsContent value={"preview"}>
+              {!!activeFragment && <FragmentWeb data={activeFragment} />}
+            </TabsContent>
+            <TabsContent value={"code"} className="min-h-0">
+              {!!activeFragment?.files && (
+                <FileExplorer files={activeFragment.files as { [path: string]: string }} />
+              )}
+            </TabsContent>
+          </Tabs>
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>
