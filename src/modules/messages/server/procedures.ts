@@ -10,6 +10,7 @@ export const messagesRouter = createTRPCRouter({
       projectId: z.string().min(1, "Project ID cannot be empty"),
     }))
     .query(async ({ input }) => {
+
       const messages = await prisma.message.findMany({
         where: {
           projectId: input.projectId,
