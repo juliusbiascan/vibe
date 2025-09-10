@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-
-// import { Button } from "@/components/ui/button";
+import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+import { Button } from "@/components/ui/button";
 
 export const Navbar = () => {
   return (
@@ -19,11 +19,23 @@ export const Navbar = () => {
           />
           <span className="font-semibold text-lg">Vibe</span>
         </Link>
-        {/* <Link href="/dashboard">
-          <Button variant="outline" size="sm">
-            Go to Dashboard
-          </Button>
-        </Link> */}
+        <SignedOut>
+          <div className="flex gap-2">
+            <SignUpButton>
+              <Button variant={"outline"} size="sm">
+                Sign Up
+              </Button>
+            </SignUpButton>
+            <SignInButton>
+              <Button size="sm">
+                Sign In
+              </Button>
+            </SignInButton>
+          </div>
+        </SignedOut>
+        <SignedIn>
+          <UserButton showName />
+        </SignedIn>
       </div>
     </nav>
   )
