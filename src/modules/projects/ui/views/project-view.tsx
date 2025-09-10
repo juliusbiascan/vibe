@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { FileExplorer } from "@/components/file-explorer";
 import { ErrorBoundary } from "react-error-boundary";
+import { UserControl } from "@/components/user-control";
 
 interface ProjectViewProps {
   projectId: string;
@@ -95,6 +96,8 @@ export const ProjectView = ({ projectId }: ProjectViewProps) => {
                     <CrownIcon /> Upgrade
                   </Link>
                 </Button>
+
+                <UserControl showName={false} />
               </div>
             </div>
             <TabsContent value={"preview"}>
