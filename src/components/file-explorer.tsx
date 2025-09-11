@@ -21,6 +21,8 @@ import {
 
 import { convertFilesToTreeItems } from "@/lib/utils";
 import { TreeView } from "@/components/tree-view";
+import { Button as UIButton } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type FileCollection = { [path: string]: string };
 
@@ -105,6 +107,8 @@ interface FileExplorerProps {
 export const FileExplorer = ({ files }: FileExplorerProps) => {
 
   const [copied, setCopied] = useState(false);
+  const isMobile = useIsMobile();
+  const [showFiles, setShowFiles] = useState(false);
 
   const [selectedFile, setSelectedFile] = useState<string | null>(() => {
     const fileKeys = Object.keys(files);
@@ -118,8 +122,11 @@ export const FileExplorer = ({ files }: FileExplorerProps) => {
   const handleFileSelect = useCallback((filePath: string) => {
     if (files[filePath]) {
       setSelectedFile(filePath);
+      if (isMobile) {
+        setShowFiles(false);
+      }
     }
-  }, [files]);
+  }, [files, isMobile]);
 
 
   const handleCopy = useCallback(() => {
@@ -131,6 +138,63 @@ export const FileExplorer = ({ files }: FileExplorerProps) => {
       }, 2000);
     }
   }, [selectedFile, files]);
+
+  if (isMobile) {
+    return (
+      <div className="h-full w-full flex flex-col">
+        <div className="border-b bg-sidebar px-2 py-2 flex items-center gap-x-2">
+          {showFiles ? (
+            <span className="text-sm font-medium">Files</span>
+          ) : (
+            selectedFile ? <FileBreadcrumb filePath={selectedFile} /> : <span className="text-muted-foreground text-sm">No file selected</span>
+          )}
+          <div className="ml-auto flex items-center gap-x-2">
+            {!showFiles && (
+              <Hint text="Copy to clipboard" side="bottom">
+                <Button
+                  variant={'outline'}
+                  size={'icon'}
+                  onClick={handleCopy}
+                  disabled={copied}>
+                  {copied ? <CopyCheckIcon /> : <CopyIcon />}
+                </Button>
+              </Hint>
+            )}
+            <UIButton
+              variant={'outline'}
+              className="h-8 px-3"
+              onClick={() => setShowFiles((v) => !v)}>
+              {showFiles ? 'Close' : 'Files'}
+            </UIButton>
+          </div>
+        </div>
+        <div className="flex-1 min-h-0">
+          {showFiles ? (
+            <div className="h-full overflow-auto p-2">
+              <TreeView
+                data={treeData}
+                value={selectedFile}
+                onSelect={handleFileSelect}
+              />
+            </div>
+          ) : selectedFile && files[selectedFile] ? (
+            <div className="h-full w-full flex flex-col">
+              <div className="flex-1 overflow-auto">
+                <CodeView
+                  lang={getLanguageFromExtension(selectedFile)}
+                  code={files[selectedFile]}
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-full text-muted-foreground">
+              No file selected
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <ResizablePanelGroup direction="horizontal">
