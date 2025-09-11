@@ -1,4 +1,4 @@
-import { Navbar } from "@/components/navbar";
+import { Navbar } from "@/modules/home/ui/components/navbar";
 
 interface Props {
   children: React.ReactNode;
