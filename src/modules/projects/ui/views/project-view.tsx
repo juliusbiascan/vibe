@@ -25,11 +25,16 @@ import { FileExplorer } from "@/components/file-explorer";
 import { ErrorBoundary } from "react-error-boundary";
 import { UserControl } from "@/components/user-control";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useAuth } from "@clerk/nextjs";
 
 interface ProjectViewProps {
   projectId: string;
 }
 export const ProjectView = ({ projectId }: ProjectViewProps) => {
+  const { has } = useAuth();
+
+  const isPro = has?.({ plan: "pro" });
+
   const [activeFragment, setActiveFragment] = React.useState<Fragment | null>(null);
   const [tabState, setTabState] = React.useState("preview");
   const isMobile = useIsMobile();
@@ -108,7 +113,7 @@ export const ProjectView = ({ projectId }: ProjectViewProps) => {
                 </TabsTrigger>
               </TabsList>
               <div className="ml-auto flex items-center gap-x-2 ">
-                <Button
+                {!isPro && <Button
                   asChild
                   className="h-8 px-2 rounded-md border"
                   onClick={() => { }}
@@ -117,7 +122,7 @@ export const ProjectView = ({ projectId }: ProjectViewProps) => {
                   <Link href={"/pricing"}>
                     <CrownIcon /> Upgrade
                   </Link>
-                </Button>
+                </Button>}
 
                 <UserControl showName={false} />
               </div>

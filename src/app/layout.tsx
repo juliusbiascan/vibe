@@ -66,7 +66,15 @@ export default function RootLayout({
 }>) {
 
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      appearance={{
+        variables: {
+          colorPrimary: "#6366f1",
+          colorText: "#111827",
+          colorTextSecondary: "#6b7280",
+        }
+      }}
+    >
       <TRPCReactProvider>
         <html lang="en" suppressHydrationWarning>
           <body

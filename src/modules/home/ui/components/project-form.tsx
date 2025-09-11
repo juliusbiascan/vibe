@@ -42,9 +42,15 @@ export const ProjectForm = () => {
 
       router.push(`/projects/${data.id}`);
 
-      //TODO: Invalidate usage status
+      queryClient.invalidateQueries(trpc.usage.status.queryOptions());
     },
     onError: (error) => {
+      toast.error(error.message || "Something went wrong");
+
+      if (error.data?.code === 'TOO_MANY_REQUESTS') {
+        router.push('/pricing');
+      }
+
       if (error?.data?.code === "UNAUTHORIZED") {
         clerk.openSignIn();
         toast.error(error.message || "Something went wrong");
